@@ -350,6 +350,7 @@ void
 thread_set_nice (int nice UNUSED) 
 {
   /* Not yet implemented. */
+  
 }
 
 /* Returns the current thread's nice value. */
