@@ -139,5 +139,8 @@ void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
 
-struct list *get_blocked_list (void); 
+void insert_to_blocked_list(int64_t);
+bool compare_threads(struct thread *, struct thread *, void *);
+void awake_from_blocked_list(int64_t);
+bool check_wakeable_threads(int64_t current_ticks);
 #endif /* threads/thread.h */

@@ -75,10 +75,42 @@ static void schedule (void);
 void thread_schedule_tail (struct thread *prev);
 static tid_t allocate_tid (void);
 
-struct list *
-get_blocked_list (void) 
+bool compare_threads(struct thread *t1, struct thread *t2, void *aux) 
 {
-  return &blocked_list;
+  int offset = *(int *)aux;
+  return *(int *)((char *)t1 + offset) < *(int *)((char *)t2 + offset);
+}
+
+void insert_to_blocked_list(int64_t ticks) 
+{
+  enum intr_level old_level;
+  struct thread *t = thread_current();
+  t->awake_ticks = ticks;
+
+  old_level = intr_disable();
+  list_push_back(&blocked_list, &t->elem);
+  thread_block();
+
+  intr_set_level(old_level);
+}
+
+void awake_threads_from_blocked_list(int64_t current_ticks) 
+{
+  struct list_elem *e;
+  if (!list_empty(&blocked_list)) {
+    for (e = list_begin (&blocked_list); e != list_end (&blocked_list); )
+    {
+      struct thread *t = list_entry (e, struct thread, elem);
+      if (t->awake_ticks <= current_ticks) 
+      {
+        e = list_remove (e);
+        thread_unblock (t);
+      }
+      else {
+        e = list_next(e);
+      }
+    }
+  }
 }
 
 /* Initializes the threading system by transforming the code
