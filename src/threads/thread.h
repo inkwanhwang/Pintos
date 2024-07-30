@@ -141,6 +141,6 @@ int thread_get_load_avg (void);
 
 void insert_to_blocked_list(int64_t);
 bool compare_threads(struct thread *, struct thread *, void *);
-void awake_from_blocked_list(int64_t);
-bool check_wakeable_threads(int64_t current_ticks);
+void awake_threads_from_blocked_list(int64_t);
+bool check_wakeable_threads(int64_t);
 #endif /* threads/thread.h */
